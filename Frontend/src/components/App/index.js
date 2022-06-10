@@ -1,14 +1,13 @@
-// == Import
+import List from "../List";
+import './style.scss'
 
-
-// == Composant
 function App() {
+
   return (
     <div className="app">
-        <div>Bonjour !</div>
+        <List />
   </div>
-  )
-};
+  );
+}
 
-// == Export
 export default App;
