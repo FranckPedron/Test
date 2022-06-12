@@ -1,16 +1,25 @@
 import Item from "./item";
 import './style.scss';
+import PropTypes from "prop-types";
 
-function List() {
+function List({tasks, toggleDone}) {
   return (
     <ul className="list">
-      <Item done title="List my TODOs" />
-      <Item title="Change a TODO state" />
-      <Item title="Detail a TODO" />
-      <Item title="Add a new TODO" />
-      <Item title="Configure Dockerfile and Docker-Compose" />
+      {
+        tasks.map(task =>
+          <Item key={task.id} toggleDone={toggleDone} {...task} />
+        )
+      }
     </ul>
   );
 }
 
-export default  List;
+List.propTypes = {
+  tasks: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+    })).isRequired,
+  toggleDone: PropTypes.func.isRequired,
+};
+
+export default List;
