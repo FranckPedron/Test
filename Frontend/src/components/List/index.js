@@ -1,6 +1,7 @@
-import Item from "./item";
+import Item from "./Item";
 import './style.scss';
 import PropTypes from "prop-types";
+import {Outlet} from "react-router-dom";
 
 function List({tasks, toggleDone}) {
   return (
@@ -10,6 +11,7 @@ function List({tasks, toggleDone}) {
           <Item key={task.id} toggleDone={toggleDone} {...task} />
         )
       }
+      <Outlet />
     </ul>
   );
 }

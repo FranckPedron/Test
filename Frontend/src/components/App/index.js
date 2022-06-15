@@ -1,40 +1,45 @@
 import List from "../List";
+import Task from "../Task";
+import Spinner from "../Spinner";
 import './style.scss'
 import {useEffect, useState} from "react";
-import axios from "axios";
-
+import {Routes, Route} from "react-router-dom";
+import API from '../../api';
 
 function App() {
-  const baseUrl = 'http://localhost:3000/api';
   const [tasks, setTasks] = useState([]);
-  const [done, setDone] = useState(false);
+  //const [done, setDone] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const fetchData = async () => {
+  const fetchTasks = async () => {
     try {
-      const response = await axios.get(baseUrl+'/todos');
+      setIsLoading(true);
+      const response = await API.get('/todos');
       setTasks(response.data);
-    } catch (e) {
-      console.log(e);
+      setIsLoading(false);
+    } catch (error) {
+      console.error(error);
+      alert('Erreur lors de la récupération des résultats');
     }
   };
 
-  useEffect(fetchData,[]);
+  useEffect(fetchTasks, []);
 
-  const notDoneTasks = tasks.filter(task =>!task.done);
-  const doneTasks = tasks.filter(task =>task.done);
+  const notDoneTasks = tasks.filter(task => !task.done);
+  const doneTasks = tasks.filter(task => task.done);
   const orderedTasks = [...notDoneTasks, ...doneTasks];
 
   /**
-   * Sets the value of 'done' to the opposite for the selected task
+   * Toggles the value of 'done' for the selected task
    * @param id task's id
    * Generates a new list of tasks
    */
   const toggleDone = (id) => {
     const newList = (tasks.map(task => {
       if (task.id === id) {
-        return {
+       return  {
           ...task,
-          done:!task.done,
+          done: !task.done,
         };
       }
       return task;
@@ -44,7 +49,13 @@ function App() {
 
   return (
     <div className="app">
-      <List tasks={orderedTasks} toggleDone={toggleDone}/>
+      {isLoading && <Spinner/>}
+      {!isLoading && (
+        <Routes>
+          <Route path="/" element={<List tasks={orderedTasks} toggleDone={toggleDone}/>}/>
+          <Route path="/tasks/:taskId" element={<Task tasks={tasks} />}/>
+        </Routes>
+      )}
     </div>
   );
 }
